@@ -25,12 +25,12 @@ For accuracy, we will ask the model wheither or not the specific PPE exist in th
 
 ## Timeline
 
-- [] Tues., Mar. 17, 2026: Go through lit to find the standards for the metrics
-- [] Sun., Mar. 22, 2026: Finish LLM Code
-- [] Wed., Mar. 25, 2026: Finish Presentation Slides
-- [] Tues., Apr. 12, 2026: Finish Report
+- [ ] Tues., Mar. 17, 2026: Go through lit to find the standards for the metrics
+- [ ] Sun., Mar. 22, 2026: Finish LLM Code
+- [ ] Wed., Mar. 25, 2026: Finish Presentation Slides
+- [ ] Tues., Apr. 12, 2026: Finish Report
 
 ## Reponsibilites
 
-- [] LLava + 1
-- [] Florence 2 + 1
+- [ ] LLava + 1
+- [ ] Florence 2 + 1
