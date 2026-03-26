@@ -1,0 +1,30 @@
+                 Class     Images  Instances      Box(P          R      mAP50  mAP50-95): 100% ━━━━━━━━━━━━ 276/276 4.7it/s 58.5s
+                   all       8814      22077       0.72      0.858      0.794      0.549
+
+100 epochs completed in 15.598 hours.
+Optimizer stripped from /mnt/datassd3/thisali/ppe_dataset/runs/detect/train3/weights/last.pt, 51.2MB
+Optimizer stripped from /mnt/datassd3/thisali/ppe_dataset/runs/detect/train3/weights/best.pt, 51.2MB
+
+Validating /mnt/datassd3/thisali/ppe_dataset/runs/detect/train3/weights/best.pt...
+Ultralytics 8.3.221 🚀 Python-3.10.18 torch-2.6.0+cu124 CUDA:0 (NVIDIA A40, 45416MiB)
+YOLO11l summary (fused): 190 layers, 25,290,106 parameters, 0 gradients, 86.6 GFLOPs
+                 Class     Images  Instances      Box(P          R      mAP50  mAP50-95): 100% ━━━━━━━━━━━━ 276/276 4.7it/s 58.6s
+                   all       8814      22077      0.719      0.857      0.795      0.549
+         Fall-Detected        899        899       0.79      0.877      0.889      0.635
+                Gloves        395        858      0.847      0.948      0.959      0.515
+               Goggles        746        827      0.828      0.989      0.974      0.636
+               Hardhat       3191       8952      0.817       0.93      0.916      0.563
+                Ladder        193        202      0.932      0.946      0.962      0.871
+                  Mask        292        554      0.474       0.94      0.548      0.461
+             NO-Gloves        571       1258      0.818      0.898      0.917      0.469
+            NO-Goggles        679        859      0.831       0.96      0.963      0.611
+            NO-Hardhat        865       2222      0.611      0.931       0.76      0.533
+               NO-Mask        327        505      0.556      0.871      0.651      0.504
+        NO-Safety Vest        189        361      0.281      0.363       0.23       0.12
+                Person        193        277      0.903       0.91      0.937      0.818
+           Safety Cone        338       3016       0.77       0.66      0.712      0.408
+           Safety Vest        609       1287      0.613      0.777      0.714      0.547
+Speed: 0.1ms preprocess, 4.1ms inference, 0.0ms loss, 0.6ms postprocess per image
+Results saved to /mnt/datassd3/thisali/ppe_dataset/runs/detect/train3
+💡 Learn more at https://docs.ultralytics.com/modes/train
+VS Code: view Ultralytics VS Code Extension ⚡ at https://docs.ultralytics.com/integrations/vscode

@@ -1,8 +1,8 @@
 task: detect
 mode: train
-model: yolo26n.pt
-data: data/data.yaml
-epochs: 100
+model: yolov8n.pt
+data: data.yaml
+epochs: 5
 time: null
 patience: 100
 batch: 16
@@ -10,8 +10,8 @@ imgsz: 640
 save: true
 save_period: -1
 cache: false
-device: null
-workers: 0
+device: '0'
+workers: 8
 project: null
 name: train
 exist_ok: false
@@ -29,7 +29,7 @@ amp: true
 fraction: 1.0
 profile: false
 freeze: null
-multi_scale: 0.0
+multi_scale: false
 compile: false
 overlap_mask: true
 mask_ratio: 4
@@ -43,7 +43,6 @@ max_det: 300
 half: false
 dnn: false
 plots: true
-end2end: null
 source: null
 vid_stride: 1
 stream_buffer: false
@@ -83,8 +82,6 @@ cls: 0.5
 dfl: 1.5
 pose: 12.0
 kobj: 1.0
-rle: 1.0
-angle: 1.0
 nbs: 64
 hsv_h: 0.015
 hsv_s: 0.7
@@ -106,4 +103,4 @@ auto_augment: randaugment
 erasing: 0.4
 cfg: null
 tracker: botsort.yaml
-save_dir: E:\LLM\ECE-9660-Project\runs\detect\train
+save_dir: /mnt/datassd3/thisali/ppe_dataset/runs/detect/train
