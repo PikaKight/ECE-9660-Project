@@ -3,6 +3,8 @@ import os
 
 from ultralytics import YOLO, settings
 
+
+
 def setup():
     cwd = os.getcwd()
 
@@ -53,7 +55,7 @@ def ppe_pred(model_path: str, tests: list):
 
     for img in pred:
         img_name = img.path.split('/')[3]
-        img.save_txt(f"resources/test/test_res/{img_name}.txt")
+        img.save_txt(f"resources/test_res/{img_name}.txt")
         results[img_name] = []
 
         for box in img.boxes:
@@ -70,22 +72,22 @@ if __name__ == "__main__":
 
     import json
 
-    path = "data/data.yaml"
+    # path = "data/data.yaml"
     
-    setup()
+    # setup()
 
     model_path = "code/ppe.pt"
 
-    if not os.path.exists(model_path):
-        ppe_model(path, model_path)
+    # if not os.path.exists(model_path):
+    #     ppe_model(path, model_path)
 
-        ppe_metrics(model_path, path)
+    #     ppe_metrics(model_path, path)
 
-    # test = "resources/test/test_images/"
+    test = "C:/Users/pikak/Downloads/archive (1)/test/images/"
 
-    # tests = [os.path.join(test, f) for f in os.listdir(test)]
+    tests = [os.path.join(test, f) for f in os.listdir(test)]
 
-    # res = parking_pred(model_path, tests)
+    res = ppe_pred(model_path, tests)
 
-    # with open("resources/test_res/test_res/test.json", 'w') as f:
-    #     json.dump(res, f, indent=4)
+    with open("resources/test_res/test.json", 'w') as f:
+        json.dump(res, f, indent=4)
