@@ -1,0 +1,24 @@
+Using same prompt as LLava
+Found 4423 images
+The following generation flags are not valid and may be ignored: ['temperature', 'top_p', 'top_k']. Set `TRANSFORMERS_VERBOSITY=info` for more details.
+Processed 1925/4423 images
+Processed 3025/4423 images
+Processed 3050/4423 images
+Processed 3075/4423 images
+Processed 3500/4423 images
+
+===== DATASET RESULTS =====
+Total images: 4423
+Used images: 113
+Skipped ambiguous YOLO: 403
+Skipped unparsable Qwen: 3907
+Compliance Accuracy: 0.8319
+Missing PPE Precision: 0.8485
+Missing PPE Recall: 0.3011
+Missing PPE F1: 0.4444
+Total Hallucinated Items: 5
+Hallucination Rate: 0.1515
+Total time: 1153.39 sec
+===========================
+Saved per-image results to: yolo_qwen_eval_results.csv
+

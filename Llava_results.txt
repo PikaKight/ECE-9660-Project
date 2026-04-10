@@ -1,0 +1,14 @@
+===== DATASET RESULTS =====
+Total images: 4423
+Used images: 4020
+Skipped ambiguous YOLO: 403
+Skipped unparsable LLaVA: 0
+Compliance Accuracy: 0.8134
+Missing PPE Precision: 0.6667
+Missing PPE Recall: 0.0356
+Missing PPE F1: 0.0677
+Total Hallucinated Items: 17
+Hallucination Rate: 0.3333
+Total time: 2080.01 sec
+===========================
+Saved per-image results to: yolo_llava_eval_results.csv
