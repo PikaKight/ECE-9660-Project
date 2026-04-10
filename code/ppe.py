@@ -3,6 +3,30 @@ import os
 
 from ultralytics import YOLO, settings
 
+CLASS_NAMES = [
+    'Fall-Detected',    # 0
+    'Gloves',           # 1
+    'Goggles',          # 2
+    'Hardhat',          # 3
+    'Ladder',           # 4
+    'Mask',             # 5
+    'NO-Gloves',        # 6
+    'NO-Goggles',       # 7
+    'NO-Hardhat',       # 8
+    'NO-Mask',          # 9
+    'NO-Safety Vest',   # 10
+    'Person',           # 11
+    'Safety Cone',      # 12
+    'Safety Vest'       # 13
+]
+
+VIOLATION_CLASSES  = {'Fall-Detected', 'NO-Gloves', 'NO-Goggles',
+                      'NO-Hardhat', 'NO-Mask', 'NO-Safety Vest'}
+COMPLIANT_CLASSES  = {'Gloves', 'Goggles', 'Hardhat', 'Mask', 'Safety Vest'}
+REQUIRED_PPE       = {'Hardhat', 'Safety Vest', 'Mask', 'Gloves', 'Goggles'}
+NEUTRAL_CLASSES    = {'Person', 'Ladder', 'Safety Cone'}
+
+
 def setup():
     cwd = os.getcwd()
 
@@ -16,16 +40,25 @@ def setup():
 
 def ppe_model(yaml_path: str, save_path: str):
 
-    model = YOLO("yolo26n.pt", task="detect")
+    model = YOLO("yolo11n.pt", task="detect")
 
-    model.train(data=yaml_path, epochs=100, imgsz=640, workers=0)
+    model.train(
+        data=yaml_path,
+        epochs=50,
+        imgsz=640,
+        workers=0,
+        batch=8,
+        patience=15,
+        optimizer="AdamW",
+        name="ppe",
+        )
 
     model.save(save_path)
 
 def ppe_metrics(model_path, yaml_path):
     model = YOLO(model_path)
     
-    metrics = model.val(data=yaml_path)
+    metrics = model.val(data=yaml_path, batch=16, conf=0.2, iou=0.5)
 
     avg_precision = metrics.box.mp
 
@@ -48,24 +81,77 @@ def ppe_pred(model_path: str, tests: list):
 
     pred = model(tests, conf=0.2)
 
-
     results = {}
-
+    
+    print("Starting prediction...")
+    
     for img in pred:
-        img_name = img.path.split('/')[3]
-        img.save_txt(f"resources/test/test_res/{img_name}.txt")
-        results[img_name] = []
+        img_name = img.path.basename(img.path)
+
+        print(f"Processing {img_name}...")
+
+        detections = []
 
         for box in img.boxes:
             res = box.xyxy[0].tolist()
-            status = box.cls[0].tolist()
+            cls_id = int(box.cls[0].tolist())
+            cls_name = CLASS_NAMES[cls_id]
+            confidence = round(box.conf[0].tolist(), 3)
 
-            res.insert(0, status)
+            if cls_name in VIOLATION_CLASSES:
+                role = "violation"
+            elif cls_name in COMPLIANT_CLASSES:
+                role = "compliant_item"
+            else:
+                role = "neutral"
 
-            results[img_name].append(res)
-    
+            detections.append({
+                "class":      cls_name,
+                "role":       role,
+                "confidence": confidence,
+                "bbox":       res,
+            })
+
+        detected_classes = {d["class"] for d in detections}
+        violations = [d for d in detections if d["role"] == "violation"]
+        compliant_items = [d["class"] for d in detections if d["role"] == "compliant_item"]
+
+        # Determine which required PPE is unaccounted for entirely
+        accounted = set()
+        for cls in detected_classes:
+            base = cls.replace("NO-", "")
+            accounted.add(base)
+        missing_ppe = list(REQUIRED_PPE - accounted)
+
+        # Overall YOLO-level compliance verdict
+        yolo_compliant = len(violations) == 0 and len(missing_ppe) == 0
+
+        results[img_name] = {
+            # ── Raw detections (full detail for Florence-2 prompt) ──
+            "detections":      detections,
+
+            # ── Summarised compliance signals ──
+            "violations":      [v["class"] for v in violations],
+            "violation_detail": violations,          # includes bbox + confidence
+            "compliant_items": compliant_items,
+            "missing_ppe":     missing_ppe,
+
+            # ── Person-level flags ──
+            "person_detected": "Person" in detected_classes,
+            "fall_detected":   "Fall-Detected" in detected_classes,
+
+            # ── YOLO-only compliance verdict (baseline for comparison) ──
+            "yolo_compliant":  yolo_compliant,
+
+            # ── Counts for quick statistics ──
+            "n_violations":    len(violations),
+            "n_compliant":     len(compliant_items),
+            "n_missing":       len(missing_ppe),
+        }
+
     return results
 
+    
 if __name__ == "__main__":
 
     import json
@@ -81,11 +167,11 @@ if __name__ == "__main__":
 
         ppe_metrics(model_path, path)
 
-    # test = "resources/test/test_images/"
+    test = "data/test/images/"
 
-    # tests = [os.path.join(test, f) for f in os.listdir(test)]
+    tests = [os.path.join(test, f) for f in os.listdir(test)]
 
-    # res = parking_pred(model_path, tests)
+    res = ppe_pred(model_path, tests)
 
-    # with open("resources/test_res/test_res/test.json", 'w') as f:
-    #     json.dump(res, f, indent=4)
+    with open("resources/test_res/test_res/test.json", 'w') as f:
+        json.dump(res, f, indent=4)
