@@ -46,6 +46,7 @@ def ppe_metrics(model_path, yaml_path):
 
 
 def ppe_pred(model_path: str, tests: list):
+
     model = YOLO(model_path)
 
     pred = model(tests, conf=0.2)
@@ -54,7 +55,11 @@ def ppe_pred(model_path: str, tests: list):
     results = {}
 
     for img in pred:
-        img_name = img.path.split('/')[3]
+
+        print(img.path)
+
+        img_name = img.path
+
         img.save_txt(f"resources/test_res/{img_name}.txt")
         results[img_name] = []
 
@@ -76,18 +81,20 @@ if __name__ == "__main__":
     
     # setup()
 
-    model_path = "code/ppe.pt"
+    model_path = "runs/detect/train3/weights/best.pt"
 
     # if not os.path.exists(model_path):
     #     ppe_model(path, model_path)
 
     #     ppe_metrics(model_path, path)
 
-    test = "C:/Users/pikak/Downloads/archive (1)/test/images/"
+    test = "resources/test/images/"
 
     tests = [os.path.join(test, f) for f in os.listdir(test)]
 
-    res = ppe_pred(model_path, tests)
+    print(tests[:5])
+
+    res = ppe_pred(model_path, tests[:5])
 
     with open("resources/test_res/test.json", 'w') as f:
         json.dump(res, f, indent=4)
