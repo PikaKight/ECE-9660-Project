@@ -26,6 +26,7 @@ COMPLIANT_CLASSES  = {'Gloves', 'Goggles', 'Hardhat', 'Mask', 'Safety Vest'}
 REQUIRED_PPE       = {'Hardhat', 'Safety Vest', 'Mask', 'Gloves', 'Goggles'}
 NEUTRAL_CLASSES    = {'Person', 'Ladder', 'Safety Cone'}
 
+
 def setup():
     cwd = os.getcwd()
 
@@ -76,6 +77,7 @@ def ppe_metrics(model_path, yaml_path):
 
 
 def ppe_pred(model_path: str, tests: list):
+
     model = YOLO(model_path)
 
     pred = model(tests, conf=0.2)
@@ -85,11 +87,13 @@ def ppe_pred(model_path: str, tests: list):
     print("Starting prediction...")
     
     for img in pred:
-        img_name = img.path.basename(img.path)
 
-        print(f"Processing {img_name}...")
+        print(img.path)
 
-        detections = []
+        img_name = img.path
+
+        img.save_txt(f"resources/test_res/{img_name}.txt")
+        results[img_name] = []
 
         for box in img.boxes:
             res = box.xyxy[0].tolist()
@@ -155,22 +159,24 @@ if __name__ == "__main__":
 
     import json
 
-    path = "data/data.yaml"
+    # path = "data/data.yaml"
     
-    setup()
+    # setup()
 
-    model_path = "code/ppe.pt"
+    model_path = "runs/detect/train3/weights/best.pt"
 
-    if not os.path.exists(model_path):
-        ppe_model(path, model_path)
+    # if not os.path.exists(model_path):
+    #     ppe_model(path, model_path)
 
-        ppe_metrics(model_path, path)
+    #     ppe_metrics(model_path, path)
 
-    test = "data/test/images/"
+    test = "resources/test/images/"
 
     tests = [os.path.join(test, f) for f in os.listdir(test)]
 
-    res = ppe_pred(model_path, tests)
+    print(tests[:5])
 
-    with open("resources/test_res/test_res/test.json", 'w') as f:
+    res = ppe_pred(model_path, tests[:5])
+
+    with open("resources/test_res/test.json", 'w') as f:
         json.dump(res, f, indent=4)
