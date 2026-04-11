@@ -26,7 +26,6 @@ COMPLIANT_CLASSES  = {'Gloves', 'Goggles', 'Hardhat', 'Mask', 'Safety Vest'}
 REQUIRED_PPE       = {'Hardhat', 'Safety Vest', 'Mask', 'Gloves', 'Goggles'}
 NEUTRAL_CLASSES    = {'Person', 'Ladder', 'Safety Cone'}
 
-
 def setup():
     cwd = os.getcwd()
 
