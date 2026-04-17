@@ -82,23 +82,29 @@ def generate_response(image_path, evidence: dict) -> dict:
         ppe_search_str
     )
 
-    tue_missing = set(evidence["required_ppe"]) - set(evidence["detected_ppe"])
+    true_missing = [item for item in evidence["required_ppe"] if item not in evidence["detected_ppe"]]
+
+
+    true_missing = [f"No-{item}" for item in true_missing]
+        
+
 
     worn = ", ".join(evidence["detected_ppe"]) or "none"
     violations = ", ".join(evidence["missing_ppe"]) or "none" 
-    missing = ", ".join(tue_missing) or "none"
+    missing = ", ".join(true_missing) or "none"
    
-    is_compliant = len(evidence["missing_ppe"]) == 0 and len(tue_missing) == 0
+    is_compliant = len(evidence["missing_ppe"]) == 0 and len(true_missing) == 0
 
     verdict = "Compliant" if is_compliant else "Non-Compliant"
 
-    explanation = f""" 
-        Visual Description: {visual_description}
-        Detected PPE: {worn}
-        Missing PPE: {violations}
-        PPE that should be worn but is not detected: {missing}
-        Verdict: {verdict}
-    """
+
+    explanation = {
+        "visual_description": visual_description,
+        "detected_ppe": worn,
+        "missing_ppe": violations,
+        "undetected_ppe": missing,
+        "verdict": verdict
+    }
 
     return {
         "image" : image_path,

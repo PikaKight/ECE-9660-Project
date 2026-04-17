@@ -89,7 +89,7 @@ def ppe_pred(model_path: str, tests: list):
     for img, org_path in zip(pred, tests):
 
         img_name = os.path.basename(org_path).split(".")[0]
-        img.save_txt(f"resources/test_res/{img_name}.txt")
+        img.save_txt(f"resources/files/{img_name}.txt")
 
         detections = []
 
