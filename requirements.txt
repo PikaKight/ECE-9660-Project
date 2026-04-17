@@ -1,2 +1,6 @@
 ultralytics==8.4.21
+transformers==4.49.0
+timm
+einops
+
 
