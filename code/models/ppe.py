@@ -76,8 +76,16 @@ def ppe_metrics(model_path, yaml_path):
           """)
 
 
-def ppe_pred(model_path: str, tests: list):
+def ppe_pred(model_path: str, tests: list) -> dict:
+    """_summary_
 
+    Args:
+        model_path (str): Path to the trained YOLO model.
+        tests (list): A list of paths to the test images.
+
+    Returns:
+        dict: A dictionary containing the prediction results for each test image.
+    """
     model = YOLO(model_path)
 
     tests = [os.path.abspath(t) for t in tests]
