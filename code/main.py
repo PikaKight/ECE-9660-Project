@@ -45,6 +45,11 @@ TEST_LABEL_PATH = "data/test/labels"
 
 MODEL_PATH = "code/models/best.pt"
 
+"""
+Due to the limited GPU resources and large number of test images
+The responses were done in batches of 100
+With a total of 45 test response files
+"""
 SPLIT_LENGTH = 100
 TEST_Files = 45
 
@@ -112,6 +117,14 @@ def load_gt(label_path: list) -> dict:
     return gt
 
 def parse_florence_pred(response: dict) -> dict:
+    """Parses the Florence response to convert it to the needed format
+
+    Args:
+        response (dict): A dictionary containing the Florence response for a single image.
+
+    Returns:
+        dict: A dictionary containing the parsed results.
+    """
     missing_raw = response.get("missing_ppe", "")
     
     missing_items = []
@@ -130,6 +143,15 @@ def parse_florence_pred(response: dict) -> dict:
     }
 
 def single_metric(pred: dict, gt: dict) -> dict:
+    """The metrics for a single response
+
+    Args:
+        pred (dict): The predicted compliance and missing items from Florence response.
+        gt (dict): The ground truth compliance and missing items from the label.
+
+    Returns:
+        dict: A dictionary containing the calculated metrics.
+    """
     accuracy = 1 if gt["compliance"] == pred["compliance"] else 0
 
     gt_set   = set(gt["missing_items"])
@@ -158,9 +180,13 @@ def single_metric(pred: dict, gt: dict) -> dict:
     }
 
 def parse_gt(gt_result: dict) -> dict:
-    """
-    Parses a ground truth entry into compliance + missing_items format.
-    gt_result is one value from load_gt() output.
+    """Parses the ground truth is fill in the missing items and compliance status
+
+    Args:
+        gt_result (dict): A dictionary containing the ground truth detected and missing items.
+
+    Returns:
+        dict: A dictionary containing the parsed ground truth with compliance status and missing items.
     """
     missing_items = gt_result.get("missing", [])
     
@@ -170,18 +196,23 @@ def parse_gt(gt_result: dict) -> dict:
     }
 
 def metrics(pred: dict, gt: dict) -> dict:
+    """The full metrics function that finds the average of the metrics
 
+    Args:
+        pred (dict): A dictionary containing the predicted compliance and missing items from Florence responses.
+        gt (dict): A dictionary containing the ground truth compliance and missing items from the labels.
+
+    Returns:
+        dict: A dictionary containing the average metrics.
+    """
     all_metrics   = []
     unmatched     = []
 
     for img_path, florence_result in pred.items():
 
-        # Derive label path from image path to match gt keys
-        # gt is keyed by label path e.g. "data/test/labels/name.txt"
         img_basename = os.path.basename(img_path)
         label_name   = os.path.splitext(img_basename)[0] + ".txt"
 
-        # Find matching gt entry — gt keys may use different path separators
         gt_key = None
         for key in gt:
             if os.path.basename(key) == label_name:

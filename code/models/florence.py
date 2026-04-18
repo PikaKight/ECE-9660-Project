@@ -29,7 +29,16 @@ processor = AutoProcessor.from_pretrained(
     )
 
 def run_task(image: Image, prompt: str, input: str="") -> str: 
-    
+    """Runs any inputted tasks
+
+    Args:
+        image (Image): The image that the model will use
+        prompt (str): The specific task the model will do
+        input (str, optional): Additional input for the task. Defaults to "".
+
+    Returns:
+        str: The model's response
+    """
     full_prompt = prompt if not input else f"{prompt}{input}"
 
     inputs = processor(
@@ -62,7 +71,16 @@ def run_task(image: Image, prompt: str, input: str="") -> str:
 
     return response
 
-def generate_response(image_path, evidence: dict) -> dict:
+def generate_response(image_path: str, evidence: dict) -> dict:
+    """Generates the response for model
+
+    Args:
+        image_path (str): The path to the image file
+        evidence (dict): A dictionary containing evidence about the image
+
+    Returns:
+        dict: A dictionary containing the generated response
+    """
     
     image = Image.open(image_path).convert("RGB")
     
